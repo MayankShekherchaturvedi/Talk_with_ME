@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk With Me</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main id="game-container">
+        <div id="bg-layer"></div>
+
+        <div id="main-menu" class="scene active">
+            <h1 class="game-title">Talk With Me</h1>
+            <button id="btn-start" class="primary-btn">Enter the Cafe</button>
+        </div>
+
+        <div id="selection-scene" class="scene hidden">
+            <div class="selection-menu">
+                <h2>The Cafe is bustling. Who do you approach?</h2>
+                <div class="choices">
+                    <button id="btn-philosopher" class="char-btn">The Philosopher</button>
+                    <button id="btn-barista" class="char-btn">The Barista</button>
+                    <button id="btn-uncle" class="char-btn">The Uncle</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dialogue-scene" class="scene hidden">
+            <button id="btn-back" class="nav-btn">⬅ Leave</button>
+            
+            <div id="character-sprite"></div>
+
+            <div id="dialogue-ui">
+                <h3 id="character-name">System</h3>
+                <p id="dialogue-text">...</p>
+                <div class="dialogue-controls">
+                    <button id="btn-talk" class="action-btn">Talk</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
