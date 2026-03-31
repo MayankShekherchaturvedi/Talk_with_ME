@@ -7,5 +7,6 @@ Current state: APIs used: Quotes API : (an api for famous quotes)
 CURRENT function: basic visual noval like game flow with 3 intractable charecters. 
 
 ART IS AI GENERATED!!! i cant draw ;(
+
 script.js and style.css Now have comments for ease of use and bug fixing
 
