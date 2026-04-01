@@ -10,3 +10,5 @@ ART IS AI GENERATED!!! i cant draw ;(
 
 script.js and style.css Now have comments for ease of use and bug fixing
 
+current deploy https://mayankshekherchaturvedi.github.io/Talk_with_ME/
+
