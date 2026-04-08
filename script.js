@@ -8,13 +8,18 @@ const bgLayer = document.getElementById('bg-layer');
 const charNameUI = document.getElementById('character-name');
 const dialogueTextUI = document.getElementById('dialogue-text');
 const btnTalk = document.getElementById('btn-talk');
+const userInputUI = document.getElementById('user-input');
+
+// --- DOM Elements: New Features ---
+const choicesContainer = document.getElementById('choices-container');
+const searchInput = document.getElementById('search-input');
+const btnSort = document.getElementById('btn-sort');
+const themeToggle = document.getElementById('theme-toggle');
 
 // --- State ---
-
 let currentCharacter = "";
 
 // --- Background Image Manager ---
-
 const backgrounds = {
     menu: 'Assets/cafe_outdoors.png',
     cafe: 'Assets/cafe_indoors.png',
@@ -46,87 +51,133 @@ document.getElementById('btn-back').addEventListener('click', () => {
     switchScene(selectionScene, 'cafe');
 });
 
+// --- MILESTONE 3: Dynamic Characters (Using Array Higher-Order Functions) ---
+const characters = ["The Philosopher", "The Barista", "The Uncle"];
+
+// Feature 1: Dynamic Rendering (Uses .map)
+function renderCharacters(charArray) {
+    choicesContainer.innerHTML = ""; 
+    
+    // REQUIREMENT: Must use map(), no for/while loops
+    charArray.map(name => {
+        const btn = document.createElement('button');
+        btn.innerText = name;
+        btn.className = 'char-btn';
+        
+        let bgKey = name.split(' ')[1].toLowerCase(); 
+        
+        btn.onclick = () => approachCharacter(name, bgKey);
+        choicesContainer.appendChild(btn);
+    });
+}
+
+// Feature 2: Searching & Filtering (Uses .filter)
+searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    // REQUIREMENT: Must use filter(), no for/while loops
+    const filteredChars = characters.filter(char => 
+        char.toLowerCase().includes(searchTerm)
+    );
+    renderCharacters(filteredChars);
+});
+
+// Feature 3: Sorting (Uses .sort)
+let isSorted = false;
+btnSort.addEventListener('click', () => {
+    isSorted = !isSorted;
+    if (isSorted) {
+        // REQUIREMENT: Must use sort(), no for/while loops
+        const sortedChars = [...characters].sort((a, b) => a.localeCompare(b));
+        renderCharacters(sortedChars);
+        btnSort.innerText = "Sort Default";
+    } else {
+        renderCharacters(characters);
+        btnSort.innerText = "Sort A-Z";
+    }
+});
+
+renderCharacters(characters);
+
+// Feature 4: Theme Toggle (Dark/Light Mode)
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+    if (document.body.classList.contains('light-mode')) {
+        themeToggle.innerText = "🌙 Dark Mode";
+    } else {
+        themeToggle.innerText = "☀️ Light Mode";
+    }
+});
+
 // --- Character Setup ---
 function approachCharacter(name, bgKey) {
     currentCharacter = name;
     switchScene(dialogueScene, bgKey);
     charNameUI.innerText = name;
     dialogueTextUI.innerText = "*They look up as you approach.*";
-    btnTalk.innerText = `Speak to ${name}`;
-    btnTalk.disabled = false;
+    userInputUI.value = ""; 
 }
 
-document.getElementById('btn-philosopher').addEventListener('click', () => approachCharacter("The Philosopher", "philosopher"));
-document.getElementById('btn-barista').addEventListener('click', () => approachCharacter("The Barista", "barista"));
-document.getElementById('btn-uncle').addEventListener('click', () => approachCharacter("The Uncle", "uncle"));
-
-
-// --- API Logic & Loading States ---
+// --- API Logic: Bulletproof Fallback Chat ---
 function setLoading(isLoading) {
-    if (isLoading) {
-        btnTalk.disabled = true;
-        dialogueTextUI.innerText = "...";
-    } else {
-        btnTalk.disabled = false;
-    }
+    btnTalk.disabled = isLoading;
+    userInputUI.disabled = isLoading;
 }
 
-// Main talk router
-btnTalk.addEventListener('click', () => {
-    if (currentCharacter === "The Philosopher") fetchQuote();
-    if (currentCharacter === "The Barista") fetchCoffeeFact();
-    if (currentCharacter === "The Uncle") fetchUselessFact();
+btnTalk.addEventListener('click', sendMessage);
+userInputUI.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') sendMessage();
 });
 
-// 1. Quotes API - OLDlady
-async function fetchQuote() {
-    setLoading(true);
-    try {
-        const response = await fetch('https://dummyjson.com/quotes/random');
-        if (!response.ok) throw new Error("API Error");
-        const data = await response.json();
-        dialogueTextUI.innerText = `"${data.quote}"`;
-    } catch (error) {
-        dialogueTextUI.innerText = "My mind is clouded today.";
-    } finally {
-        setLoading(false);
-    }
-}
+async function sendMessage() {
+    const userMessage = userInputUI.value.trim();
+    if (!userMessage) return;
 
-// 2. Coffee API 
-async function fetchCoffeeFact() {
+    dialogueTextUI.innerHTML = `<strong>You:</strong> ${userMessage}<br><br><em>*Thinking...*</em>`;
+    userInputUI.value = "";
     setLoading(true);
-    try {
-        const response = await fetch('https://api.sampleapis.com/coffee/hot');
-        if (!response.ok) throw new Error("API Error");
-        const allCoffees = await response.json();
 
-        const validCoffees = allCoffees.filter(coffee => coffee.description && coffee.description.length > 10);
+    try {
+        let responseText = "";
+        if (currentCharacter === "The Philosopher") {
+            const res = await fetch('https://dummyjson.com/quotes/random');
+            const data = await res.json();
+            responseText = `"${data.quote}"`;
+        } 
+        else if (currentCharacter === "The Barista") {
+            const res = await fetch('https://thirdwavecoffeebase.com/roasters/Sightglass%20Coffee');
+            if (!res.ok) throw new Error("Coffee API Down");
+            
+            const data = await res.json();
+            
+            if (data.coffees && data.coffees.length > 0) {
+                const randomCoffee = data.coffees[Math.floor(Math.random() * data.coffees.length)];
+                const coffeeName = randomCoffee.name || "our house blend";
+                
+                let notes = "It's highly exclusive.";
+                if (randomCoffee.tastingNotes && randomCoffee.tastingNotes.length > 0) {
+                    notes = `It has notes of ${randomCoffee.tastingNotes.join(", ")}.`;
+                }
+                
+                responseText = `"(Unamused) Have you tried the ${coffeeName} from ${data.name}? ${notes} But honestly, your palate probably isn't refined enough for it."`;
+            } else {
+                responseText = `"(Sighs) We are entirely out of beans right now. Just order water."`;
+            }
+        }
+        else if (currentCharacter === "The Uncle") {
+            const res = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
+            const data = await res.json();
+            responseText = `"Hey kid, did you know? ${data.text}"`;
+        }
+
+        dialogueTextUI.innerHTML = `<strong>You:</strong> ${userMessage}<br><br><strong>${currentCharacter}:</strong> ${responseText}`;
         
-        const randomCoffee = validCoffees[Math.floor(Math.random() * validCoffees.length)];
-        
-        dialogueTextUI.innerText = `"(With an un ammused face) Have you tried a ${randomCoffee.title}? ${randomCoffee.description}"`;
     } catch (error) {
-        dialogueTextUI.innerText = "The espresso machine is broken, I can't talk right now...";
+        console.error("API Error:", error);
+        dialogueTextUI.innerHTML = `<strong>${currentCharacter}:</strong> "Sorry, I lost my train of thought."`;
     } finally {
         setLoading(false);
     }
 }
 
-// 3. Useless Facts API
-async function fetchUselessFact() {
-    setLoading(true);
-    try {
-        const response = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
-        if (!response.ok) throw new Error("API Error");
-        const data = await response.json();
-        dialogueTextUI.innerText = `"Hey kid, did you know? ${data.text}"`;
-    } catch (error) {
-        dialogueTextUI.innerText = "*He stares off into space, forgetting what he was saying.*";
-    } finally {
-        setLoading(false);
-    }
-}
-
-// Initialize first screen background
 setBackground(backgrounds.menu);

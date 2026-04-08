@@ -13,6 +13,46 @@ body {
     align-items: center;
     height: 100vh;
     color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode {
+    background-color: #f4f4f4;
+    color: #111;
+}
+
+body.light-mode #game-container {
+    background-color: #fff;
+    border-color: #ccc;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+}
+
+body.light-mode .selection-menu {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #ddd;
+    color: #000;
+}
+
+body.light-mode #dialogue-ui {
+    background-color: rgba(245, 245, 245, 0.95);
+    border-top: 2px solid #ccc;
+}
+
+body.light-mode button {
+    background-color: #ddd;
+    color: #000;
+    border-color: #bbb;
+}
+
+body.light-mode button:hover {
+    background-color: #bbb;
+}
+
+body.light-mode input {
+    background-color: #fff !important;
+    color: #000 !important;
+    border-color: #aaa !important;
 }
 
 /* Main Game Window */
@@ -26,6 +66,7 @@ body {
     overflow: hidden;
     box-shadow: 0 0 30px rgba(0,0,0,0.9);
     background-color: #111;
+    transition: all 0.3s;
 }
 
 /* Dynamic Background Layer */
@@ -79,6 +120,23 @@ body {
     border-radius: 10px;
     text-align: center;
     border: 1px solid #444;
+    transition: all 0.3s;
+}
+
+.toolbar {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.toolbar input {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    font-family: inherit;
 }
 
 .choices {
@@ -110,6 +168,7 @@ body {
     min-height: 200px;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s;
 }
 
 #character-name {
@@ -126,6 +185,23 @@ body {
     flex-grow: 1;
 }
 
+.dialogue-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.dialogue-controls input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
 /* Buttons */
 button {
     background-color: #222;
@@ -136,6 +212,7 @@ button {
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s;
+    border-radius: 4px;
 }
 
 button:hover {
@@ -154,4 +231,12 @@ button:disabled {
     position: absolute;
     top: 20px;
     left: 20px;
+    z-index: 10;
+}
+
+.theme-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    left: auto;
 }

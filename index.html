@@ -8,6 +8,8 @@
 </head>
 <body>
 
+    <button id="theme-toggle" class="nav-btn theme-btn">☀️ Light Mode</button>
+
     <main id="game-container">
         <div id="bg-layer"></div>
 
@@ -19,11 +21,13 @@
         <div id="selection-scene" class="scene hidden">
             <div class="selection-menu">
                 <h2>The Cafe is bustling. Who do you approach?</h2>
-                <div class="choices">
-                    <button id="btn-philosopher" class="char-btn">The Philosopher</button>
-                    <button id="btn-barista" class="char-btn">The Barista</button>
-                    <button id="btn-uncle" class="char-btn">The Uncle</button>
+                
+                <div class="toolbar">
+                    <input type="text" id="search-input" placeholder="Search character...">
+                    <button id="btn-sort" class="action-btn">Sort A-Z</button>
                 </div>
+
+                <div class="choices" id="choices-container"></div>
             </div>
         </div>
 
@@ -36,7 +40,8 @@
                 <h3 id="character-name">System</h3>
                 <p id="dialogue-text">...</p>
                 <div class="dialogue-controls">
-                    <button id="btn-talk" class="action-btn">Talk</button>
+                    <input type="text" id="user-input" placeholder="Say something..." autocomplete="off">
+                    <button id="btn-talk" class="action-btn">Send</button>
                 </div>
             </div>
         </div>
