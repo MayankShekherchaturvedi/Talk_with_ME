@@ -27,13 +27,13 @@ With the midnight deadline approaching, I pulled the plug on the AI revolution. 
 
 They aren't sentient, but they get the job done (and they don't throw CORS errors).
 
-## 🚀 How to Run
+## How to Run
 
 1. Clone or download this repository.
 2. Open `index.html` in any modern web browser.
 3. No build steps, `npm install`, or server required.
 
-## 🛠️ Tech Stack
+## Tech Stack
 * HTML5
 * CSS3 (Vanilla)
 * JavaScript (ES6+, Fetch API)
